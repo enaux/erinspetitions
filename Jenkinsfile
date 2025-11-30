@@ -79,7 +79,7 @@ pipeline {
                             tomcat:9.0-jre17
 
                         echo "Waiting for Tomcat to start..."
-                        sleep 30
+                        sleep 45
                     '''
                     echo "Deployed by: ${env.APPROVED_BY}"
                 }
