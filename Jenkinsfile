@@ -31,6 +31,7 @@ pipeline {
 
         stage('Package') {
             steps {
+                export MAVEN_OPTS="-Dorg.jenkinsci.plugins.durabletask.BourneShellScript.HEARTBEAT_CHECK_INTERVAL=300"
                 sh "mvn package -DskipTests"
             }
         }
