@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('GetProject') {
+            steps {
+                git 'https://github.com/enaux/ct5171_springBoot.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh "mvn clean:clean"
+                sh "mvn dependency:copy-dependencies"
+                sh "mvn compiler:compile"
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running unit tests'
+                sh 'mvn test'
+            }
+//             post {
+//                 always {
+//                     junit 'target/surefire-reports/*.xml'
+//                 }
+//             }
+        }
+
+        stage('Package') {
+            steps {
+                sh "mvn package"
+            }
+        }
+
+        stage('Archive') {
+            steps {
+                archiveArtifacts(
+                    allowEmptyArchive: true,
+                    artifacts: '**/ct5171_springBoot*.war'
+                )
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh "docker build -f Dockerfile -t myapp ."
+                sh "mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8085"
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed.'
+
+        }
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
