@@ -22,11 +22,11 @@ pipeline {
                 echo 'Running unit tests'
                 sh 'mvn test'
             }
-//             post {
-//                 always {
-//                     junit 'target/surefire-reports/*.xml'
-//                 }
-//             }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
         }
 
         stage('Package') {
@@ -39,7 +39,7 @@ pipeline {
             steps {
                 archiveArtifacts(
                     allowEmptyArchive: true,
-                    artifacts: '**/ct5171_springBoot*.war'
+                    artifacts: '**/erinspetitions*.war'
                 )
             }
         }
@@ -47,7 +47,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh "docker build -f Dockerfile -t myapp ."
-                sh "mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8085"
+                sh "mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=9090"
             }
         }
     }
