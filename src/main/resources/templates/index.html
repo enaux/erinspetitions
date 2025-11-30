@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
     <head>
         <meta charset="UTF-8">
@@ -10,65 +10,75 @@
     </head>
 
     <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-leaf me-2"></i>
-                Erin's Petitions
-            </a>
-        </div>
-    </nav>
 
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h3">Environmental Petitions</h1>
-                    <a th:href="@{/create}" class="btn btn-success">
-                        <i class="fas fa-plus me-1"></i>Create New Petition
+        <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <i class="fas fa-leaf me-2"></i>
+                    Erin's Petitions
+                </a>
+                <div class="navbar-nav">
+                    <a class="nav-link" th:href="@{/create}">
+                        <i class="fas fa-plus me-1"></i>Create Petition
+                    </a>
+                    <a class="nav-link" th:href="@{/search}">
+                        <i class="fas fa-search me-1"></i>Search
                     </a>
                 </div>
+            </div>
+        </nav>
 
-                <!-- Search Form -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <form th:action="@{/search}" method="get" class="row g-3">
-                            <div class="col-md-8">
-                                <input type="text" name="query" class="form-control" placeholder="Search environmental petitions..." required>
-                            </div>
-                            <div class="col-md-4">
-                                <button type="submit" class="btn btn-primary w-100">
-                                    <i class="fas fa-search me-1"></i>Search
-                                </button>
-                            </div>
-                        </form>
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="h3">Environmental Petitions</h1>
+                        <a th:href="@{/create}" class="btn btn-success">
+                            <i class="fas fa-plus me-1"></i>Create New Petition
+                        </a>
                     </div>
-                </div>
 
-                <!-- Petitions List -->
-                <div class="row" th:if="${petitions.empty}">
-                    <div class="col-12">
-                        <div class="alert alert-info text-center">
-                            <i class="fas fa-info-circle me-2"></i>
-                            No petitions found - create one!
+                    <!-- Search Form -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <form th:action="@{/search}" method="get" class="row g-3">
+                                <div class="col-md-8">
+                                    <input type="text" name="query" class="form-control" placeholder="Search environmental petitions..." required>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-search me-1"></i>Search
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </div>
 
-                <div class="row" th:unless="${petitions.empty}">
-                    <div class="col-md-6 col-lg-4 mb-4" th:each="petition : ${petitions}">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title" th:text="${petition.title}">Petition Title</h5>
-                                <p class="card-text text-muted" th:text="${petition.description}">Petition description...</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">
-                                        <i class="fas fa-users me-1"></i>
-                                        <span th:text="${petition.signatories.size()}">0</span> supporters
-                                    </small>
-                                    <a th:href="@{/petition/{id}(id=${petition.id})}" class="btn btn-outline-success btn-sm">
-                                        View & Sign
-                                    </a>
+                    <!-- Petitions List -->
+                    <div class="row" th:if="${petitions.empty}">
+                        <div class="col-12">
+                            <div class="alert alert-info text-center">
+                                <i class="fas fa-info-circle me-2"></i>
+                                No petitions found - create one!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" th:unless="${petitions.empty}">
+                        <div class="col-md-6 col-lg-4 mb-4" th:each="petition : ${petitions}">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${petition.title}">Petition Title</h5>
+                                    <p class="card-text text-muted" th:text="${petition.description}">Petition description...</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            <i class="fas fa-users me-1"></i>
+                                            <span th:text="${petition.signatories.size()}">0</span> supporters
+                                        </small>
+                                        <a th:href="@{/petition/{id}(id=${petition.id})}" class="btn btn-outline-success btn-sm">
+                                            View & Sign
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -76,8 +86,9 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
     </body>
+
 </html>
