@@ -22,11 +22,11 @@ pipeline {
                 echo 'Running unit tests'
                 sh 'mvn test'
             }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
+//             post {
+//                 always {
+//                     junit 'target/surefire-reports/*.xml'
+//                 }
+//             }
         }
 
         stage('Package') {
@@ -44,12 +44,42 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                sh "docker build -f Dockerfile -t erinspetitions ."
-                //sh "mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=9090"
+//         stage('Deploy') {
+//             steps {
+//                 sh "docker build -f Dockerfile -t erinspetitions ."
+//                 sh "docker rm -f "myappcontainer" || true"
+//                 sh "docker run --name "myappcontainer" -p 8081:8080 --detach erinspetitions:latest"
+//                 //sh "mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=9090"
+//             }
+//         }
+
+            stage('Approval') {
+                steps {
+                    timeout(time: 30, unit: 'MINUTES') {
+                        input(
+                            message: 'Approve deployment to Tomcat container?',
+                            ok: 'Deploy',
+                            submitterParameter: 'APPROVED_BY'
+                        )
+                    }
+                }
             }
-        }
+
+            stage('Deploy') {
+                steps {
+                    sh '''
+                        docker stop erinspetitions-tomcat || true
+                        docker rm erinspetitions-tomcat || true
+
+                        docker run -d \\
+                            --name erinspetitions-tomcat \\
+                            -p 9090:8080 \\
+                            -v $(pwd)/target/erinspetitions.war:/usr/local/tomcat/webapps/ROOT.war \\
+                            tomcat:9.0-jre17
+                    '''
+                    echo "Deployed by: ${env.APPROVED_BY}"
+                }
+            }
     }
 
     post {
