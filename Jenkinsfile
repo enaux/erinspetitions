@@ -5,7 +5,7 @@ pipeline {
 
         stage('GetProject') {
             steps {
-                git 'https://github.com/enaux/ct5171_springBoot.git'
+                git 'https://github.com/enaux/erinspetitions.git'
             }
         }
 
