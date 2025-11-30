@@ -46,8 +46,8 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh "docker build -f Dockerfile -t myapp ."
-                sh "mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=9090"
+                sh "docker build -f Dockerfile -t erinspetitions ."
+                //sh "mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=9090"
             }
         }
     }
