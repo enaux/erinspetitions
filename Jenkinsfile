@@ -68,18 +68,12 @@ pipeline {
 
             stage('Deploy') {
                 steps {
+                    sh "docker build -f Dockerfile -t erinspetitions ."
+                    sh "docker rm -f erinspetitions-tomcat || true"
+                    sh "docker run --name erinspetitions-tomcat -p 9090:8080 --detach erinspetitions:latest"
                     sh '''
-                        docker stop erinspetitions-tomcat || true
-                        docker rm erinspetitions-tomcat || true
-
-                        docker run -d \\
-                            --name erinspetitions-tomcat \\
-                            -p 9090:8080 \\
-                            -v $(pwd)/target/erinspetitions.war:/usr/local/tomcat/webapps/ROOT.war \\
-                            tomcat:9.0-jre17
-
                         echo "Waiting for Tomcat to start..."
-                        sleep 45
+                        sleep 30
                     '''
                     echo "Deployed by: ${env.APPROVED_BY}"
                 }
