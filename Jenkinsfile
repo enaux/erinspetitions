@@ -9,63 +9,29 @@ pipeline {
             }
         }
 
-//         stage('Build') {
-//             steps {
-//                 sh "mvn clean:clean"
-//                 sh "mvn dependency:copy-dependencies"
-//                 sh "mvn compiler:compile"
-//             }
-//         }
-
-//         stage('Test') {
-//             steps {
-//                 echo 'Running unit tests'
-//                 sh 'mvn test -DskipTests'
-//             }
-// //             post {
-// //                 always {
-// //                     junit 'target/surefire-reports/*.xml'
-// //                 }
-// //             }
-//         }
-
-//         stage('Package') {
-//             steps {
-//                 sh "mvn package"
-//             }
-//         }
-
-        stage('Build and Package') {
+        stage('Build') {
             steps {
-                sh '''
-                    echo "=== Building with Maven ==="
-                    mvn clean compile package -DskipTests
-                '''
-
-                script {
-                    if (!fileExists('target/erinspetitions.war')) {
-                        error "Build failed - WAR file not created in target directory"
-                    }
-                }
-
-                sh '''
-                    echo "=== Build Successful ==="
-                    ls -la target/
-                '''
+                sh "mvn clean:clean"
+                sh "mvn dependency:copy-dependencies"
+                sh "mvn compiler:compile"
             }
         }
 
-        stage('Troubleshoot') {
+        stage('Test') {
             steps {
-                sh '''
-                    echo "=== Project Analysis ==="
-                    pwd
-                    ls -la
-                    echo "=== POM Analysis ==="
-                    grep -A 2 -B 2 "<packaging>" pom.xml || echo "No packaging specified"
-                    echo "=== Build Plugins ==="
-                    grep -A 5 "<build>" pom.xml || echo "No build section"
-                '''
+                echo 'Running tests'
+                sh 'mvn test'
+            }
+//             post {
+//                 always {
+//                     junit 'target/surefire-reports/*.xml'
+//                 }
+//             }
+        }
+
+        stage('Package') {
+            steps {
+                sh "mvn package"
             }
         }
 
@@ -103,12 +69,7 @@ pipeline {
                 steps {
                     sh "docker build -f Dockerfile -t erinspetitions ."
                     sh "docker rm -f erinspetitions-tomcat || true"
-                    sh "docker run --name erinspetitions-tomcat -p 9090:8080 --detach erinspetitions:latest"
-                    sh '''
-                        echo "Waiting for Tomcat to start..."
-                        sleep 30
-                    '''
-                    echo "Deployed by: ${env.APPROVED_BY}"
+                    sh "docker run --name erinspetitions-tomcat -p 9090:8080 erinspetitions:latest"
                 }
             }
     }
