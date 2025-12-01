@@ -33,7 +33,20 @@ pipeline {
         stage('Package') {
             steps {
                 sh "mvn package"
-                ls -la target/ || echo "Build failed - no target directory created"
+            }
+        }
+
+        stage('Troubleshoot') {
+            steps {
+                sh '''
+                    echo "=== Project Analysis ==="
+                    pwd
+                    ls -la
+                    echo "=== POM Analysis ==="
+                    grep -A 2 -B 2 "<packaging>" pom.xml || echo "No packaging specified"
+                    echo "=== Build Plugins ==="
+                    grep -A 5 "<build>" pom.xml || echo "No build section"
+                '''
             }
         }
 
