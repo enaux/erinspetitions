@@ -11,9 +11,10 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh "mvn clean:clean"
-                sh "mvn dependency:copy-dependencies"
-                sh "mvn compiler:compile"
+//                 sh "mvn clean:clean"
+//                 sh "mvn dependency:copy-dependencies"
+//                 sh "mvn compiler:compile"
+                sh "mvn clean compile"
             }
         }
 
@@ -31,8 +32,8 @@ pipeline {
 
         stage('Package') {
             steps {
-//                 sh 'export MAVEN_OPTS="-Dorg.jenkinsci.plugins.durabletask.BourneShellScript.HEARTBEAT_CHECK_INTERVAL=300"'
                 sh "mvn package"
+                ls -la target/ || echo "Build failed - no target directory created"
             }
         }
 
