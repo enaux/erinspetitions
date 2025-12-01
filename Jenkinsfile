@@ -9,14 +9,13 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
+//         stage('Build') {
+//             steps {
 //                 sh "mvn clean:clean"
 //                 sh "mvn dependency:copy-dependencies"
 //                 sh "mvn compiler:compile"
-                sh "mvn clean compile"
-            }
-        }
+//             }
+//         }
 
 //         stage('Test') {
 //             steps {
@@ -30,9 +29,29 @@ pipeline {
 // //             }
 //         }
 
-        stage('Package') {
+//         stage('Package') {
+//             steps {
+//                 sh "mvn package"
+//             }
+//         }
+
+        stage('Build and Package') {
             steps {
-                sh "mvn package"
+                sh '''
+                    echo "=== Building with Maven ==="
+                    mvn clean compile package -DskipTests
+                '''
+
+                script {
+                    if (!fileExists('target/erinspetitions.war')) {
+                        error "Build failed - WAR file not created in target directory"
+                    }
+                }
+
+                sh '''
+                    echo "=== Build Successful ==="
+                    ls -la target/
+                '''
             }
         }
 
