@@ -69,7 +69,7 @@ pipeline {
                 steps {
                     sh "docker build -f Dockerfile -t erinspetitions ."
                     sh "docker rm -f erinspetitions-tomcat || true"
-                    sh "docker run --name erinspetitions-tomcat -p 9090:8080 erinspetitions:latest"
+                    sh "docker run --name erinspetitions-tomcat -p 9090:8080 --detach erinspetitions"
                 }
             }
     }
