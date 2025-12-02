@@ -20,11 +20,6 @@ pipeline {
                 echo 'Running tests'
                 sh 'mvn test'
             }
-//             post {
-//                 always {
-//                     junit 'target/surefire-reports/*.xml'
-//                 }
-//             }
         }
 
         stage('Package') {
@@ -47,7 +42,6 @@ pipeline {
 //                 sh "docker build -f Dockerfile -t erinspetitions ."
 //                 sh "docker rm -f "myappcontainer" || true"
 //                 sh "docker run --name "myappcontainer" -p 9090:8080 --detach erinspetitions:latest"
-//                 //sh "mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=9090"
 //             }
 //         }
 
@@ -67,7 +61,7 @@ pipeline {
                 steps {
                     sh "docker build -f Dockerfile -t erinspetitions ."
                     sh "docker rm -f erinspetitions-tomcat || true"
-                    sh "docker run --name erinspetitions-tomcat -p 9090:8080 --detach erinspetitions"
+                    sh "docker run --name erinspetitions-tomcat -p 9090:8080 --detach erinspetitions:latest"
                 }
             }
     }
