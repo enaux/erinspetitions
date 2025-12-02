@@ -59,7 +59,7 @@ pipeline {
 
             stage('Deploy') {
                 steps {
-                    sh "docker build -f Dockerfile -t erinspetitions ."
+                    sh "docker build -f Dockerfile -t erinspetitions:latest ."
                     sh "docker rm -f erinspetitions-tomcat || true"
                     sh "docker run --name erinspetitions-tomcat -p 9090:8080 --detach erinspetitions:latest"
                 }
