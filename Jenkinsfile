@@ -12,6 +12,18 @@ pipeline {
         stage('Build') {
             steps {
                 sh "mvn clean:clean"
+                sh "mvn compiler:compile"
+            }
+        }
+
+        stage('Check Dependencies') {
+            steps {
+                sh '''
+                    echo "=== Checking for Tomcat dependencies ==="
+                    mvn dependency:tree | grep -i tomcat
+                    echo "=== Checking WAR contents ==="
+                    jar tf target/erinspetitions.war | grep -i tomcat
+                '''
             }
         }
 
