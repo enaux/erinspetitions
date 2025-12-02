@@ -29,6 +29,14 @@ pipeline {
             }
         }
 
+        stage('Verify WAR') {
+                    steps {
+                        echo 'Verifying WAR structure...'
+                        sh "jar tf target/erinspetitions.war | grep -E 'WEB-INF/classes/com/example' | head -10"
+                        sh "jar tf target/erinspetitions.war | grep 'BOOT-INF' && echo 'ERROR: BOOT-INF found - repackage not skipped!' && exit 1 || echo 'OK: No BOOT-INF (correct for external Tomcat)'"
+                    }
+                }
+
         stage('Archive') {
             steps {
                 archiveArtifacts(
@@ -52,9 +60,11 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh "docker build -f Dockerfile -t erinspetitions:latest ."
+                sh "docker build --no-cache -f Dockerfile -t erinspetitions:latest ."
                 sh "docker rm -f erinspetitions-tomcat || true"
                 sh "docker run --name erinspetitions-tomcat -p 9090:8080 --detach erinspetitions:latest"
+                sh "sleep 10"
+                sh "docker logs erinspetitions-tomcat 2>&1 | tail -30"
             }
         }
     }
