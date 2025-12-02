@@ -3,9 +3,15 @@ pipeline {
 
     stages {
 
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
         stage('GetProject') {
             steps {
-                git 'https://github.com/enaux/erinspetitions.git'
+                git branch: 'master', url: 'https://github.com/enaux/erinspetitions.git'
             }
         }
 
@@ -33,7 +39,7 @@ pipeline {
             steps {
                 echo 'Verifying WAR structure...'
                 sh "jar tf target/erinspetitions.war | grep -E 'WEB-INF/classes/com/example' | head -10"
-                sh "jar tf target/erinspetitions.war | grep 'BOOT-INF' && echo 'ERROR: BOOT-INF found - repackage not skipped!' && exit 1 || echo 'OK: No BOOT-INF (correct for external Tomcat)'"
+                sh "jar tf target/erinspetitions.war | grep 'BOOT-INF' && echo 'ERROR: BOOT-INF found!' && exit 1 || echo 'OK: No BOOT-INF (correct for external Tomcat)'"
             }
         }
 
@@ -63,8 +69,8 @@ pipeline {
                 sh "docker build --no-cache -f Dockerfile -t erinspetitions:latest ."
                 sh "docker rm -f erinspetitions-tomcat || true"
                 sh "docker run --name erinspetitions-tomcat -p 9090:8080 --detach erinspetitions:latest"
-                sh "sleep 10"
-                sh "docker logs erinspetitions-tomcat 2>&1 | tail -30"
+                sh "sleep 15"
+                sh "docker logs erinspetitions-tomcat 2>&1 | tail -50"
             }
         }
     }
