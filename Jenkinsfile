@@ -21,8 +21,20 @@ pipeline {
                 sh '''
                     echo "=== Checking for Tomcat dependencies ==="
                     mvn dependency:tree | grep -i tomcat
-                    echo "=== Checking WAR contents ==="
-                    jar tf target/erinspetitions.war | grep -i tomcat
+                    echo "=== What files exist in target/ ==="
+                    ls -la target/
+                    echo "=== Checking if WAR exists (any name) ==="
+                    ls -la target/*.war* 2>/dev/null || echo "No war files found"
+                    echo "=== Checking the actual WAR file ==="
+                    # Try different possible names
+                    if [ -f "target/erinspetitions.war" ]; then
+                        jar tf target/erinspetitions.war | head -20
+                    elif [ -f "target/erinspetitions.war.original" ]; then
+                        jar tf target/erinspetitions.war.original | head -20
+                    else
+                        echo "ERROR: No WAR file found!"
+                        exit 1
+                    fi
                 '''
             }
         }
