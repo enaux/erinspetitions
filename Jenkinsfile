@@ -30,12 +30,12 @@ pipeline {
         }
 
         stage('Verify WAR') {
-                    steps {
-                        echo 'Verifying WAR structure...'
-                        sh "jar tf target/erinspetitions.war | grep -E 'WEB-INF/classes/com/example' | head -10"
-                        sh "jar tf target/erinspetitions.war | grep 'BOOT-INF' && echo 'ERROR: BOOT-INF found - repackage not skipped!' && exit 1 || echo 'OK: No BOOT-INF (correct for external Tomcat)'"
-                    }
-                }
+            steps {
+                echo 'Verifying WAR structure...'
+                sh "jar tf target/erinspetitions.war | grep -E 'WEB-INF/classes/com/example' | head -10"
+                sh "jar tf target/erinspetitions.war | grep 'BOOT-INF' && echo 'ERROR: BOOT-INF found - repackage not skipped!' && exit 1 || echo 'OK: No BOOT-INF (correct for external Tomcat)'"
+            }
+        }
 
         stage('Archive') {
             steps {
@@ -72,7 +72,6 @@ pipeline {
     post {
         always {
             echo 'Pipeline completed.'
-
         }
         success {
             echo 'Pipeline succeeded!'
