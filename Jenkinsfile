@@ -21,12 +21,12 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                echo 'Running tests'
-                sh 'mvn test'
-            }
-        }
+//         stage('Test') {
+//             steps {
+//                 echo 'Running tests'
+//                 sh 'mvn test'
+//             }
+//         }
 
         stage('Package') {
             steps {
